@@ -5,6 +5,6 @@ data class Lokacija(
     val drzava: String,
     val latitude: Double,
     val longitude: Double,
-    val tipPrikaza: String, // "Po satu", "Po danu", "Sedmično" val
-    korisnikUpisan: Boolean = false
+    val tipPrikaza: String,
+    val korisnikUpisan: Boolean = false
 )
