@@ -1,16 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <style name="Theme.WeatherWatch" parent="Theme.MaterialComponents.DayNight.NoActionBar">
-        <item name="colorPrimary">#5B9BD5</item>
-        <item name="colorPrimaryVariant">#1565C0</item>
+        <item name="colorPrimary">#1565C0</item>
+        <item name="colorPrimaryVariant">#0D47A1</item>
         <item name="colorOnPrimary">#FFFFFF</item>
-        <item name="colorSecondary">#38BDF8</item>
+        <item name="colorSecondary">#0EA5E9</item>
         <item name="colorOnSecondary">#FFFFFF</item>
-        <item name="colorSurface">#1E2430</item>
-        <item name="colorOnSurface">#E2E8F0</item>
-        <item name="colorOutline">#334155</item>
-        <item name="android:colorBackground">#131A24</item>
-        <item name="android:statusBarColor">#0D1117</item>
+        <item name="colorSurface">#1E293B</item>
+        <item name="colorOnSurface">#F1F5F9</item>
+        <item name="colorOnSurfaceVariant">#94A3B8</item>
+        <item name="colorSurfaceVariant">#334155</item>
+        <item name="colorOutline">#475569</item>
+        <item name="android:colorBackground">#0F172A</item>
+        <item name="android:statusBarColor">#0D47A1</item>
         <item name="android:windowLightStatusBar">false</item>
     </style>
 </resources>

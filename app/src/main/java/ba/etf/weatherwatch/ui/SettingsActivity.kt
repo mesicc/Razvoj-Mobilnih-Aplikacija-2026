@@ -91,4 +91,4 @@ class SettingsActivity : AppCompatActivity() {
             vm.postaviNotifikacijeOluja(isChecked)
         }
     }
-} 
+}
