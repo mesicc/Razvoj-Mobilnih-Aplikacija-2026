@@ -2,12 +2,19 @@ package ba.etf.weatherwatch.ui
 
 import android.os.Bundle
 import android.widget.RadioGroup
+import android.widget.TextView
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
+import androidx.lifecycle.asLiveData
+import androidx.lifecycle.lifecycleScope
+import com.google.android.material.button.MaterialButton
 import com.google.android.material.switchmaterial.SwitchMaterial
 import ba.etf.weatherwatch.R
+import ba.etf.weatherwatch.WeatherWatchApplication
 import ba.etf.weatherwatch.viewmodel.SettingsViewModel
+import com.google.android.material.snackbar.Snackbar
+import kotlinx.coroutines.launch
 
 class SettingsActivity : AppCompatActivity() {
 
@@ -25,17 +32,17 @@ class SettingsActivity : AppCompatActivity() {
 
         val prefs = getSharedPreferences("ww_prefs", MODE_PRIVATE)
 
-        val rgTema = findViewById<RadioGroup>(R.id.rgTema)
-        val rgJezik = findViewById<RadioGroup>(R.id.rgJezik)
+        val rgTema     = findViewById<RadioGroup>(R.id.rgTema)
+        val rgJezik    = findViewById<RadioGroup>(R.id.rgJezik)
         val rgJedinice = findViewById<RadioGroup>(R.id.rgJedinice)
         val swNotifikacije = findViewById<SwitchMaterial>(R.id.swNotifikacije)
-        val swOluja = findViewById<SwitchMaterial>(R.id.swOluja)
+        val swOluja        = findViewById<SwitchMaterial>(R.id.swOluja)
 
         // Učitaj trenutne postavke
         when (prefs.getString("tema", "auto")) {
             "light" -> rgTema.check(R.id.rbTemaLight)
-            "dark" -> rgTema.check(R.id.rbTemaDark)
-            else -> rgTema.check(R.id.rbTemaAuto)
+            "dark"  -> rgTema.check(R.id.rbTemaDark)
+            else    -> rgTema.check(R.id.rbTemaAuto)
         }
 
         when (prefs.getString("jezik", "bs")) {
@@ -45,18 +52,18 @@ class SettingsActivity : AppCompatActivity() {
 
         when (prefs.getString("jedinice", "celsius")) {
             "fahrenheit" -> rgJedinice.check(R.id.rbFahrenheit)
-            else -> rgJedinice.check(R.id.rbCelsius)
+            else         -> rgJedinice.check(R.id.rbCelsius)
         }
 
         swNotifikacije.isChecked = prefs.getBoolean("notifikacije", true)
-        swOluja.isChecked = prefs.getBoolean("notifikacije_oluja", true)
+        swOluja.isChecked        = prefs.getBoolean("notifikacije_oluja", true)
 
         // Slušaj promjene
         rgTema.setOnCheckedChangeListener { _, checkedId ->
             val tema = when (checkedId) {
                 R.id.rbTemaLight -> "light"
-                R.id.rbTemaDark -> "dark"
-                else -> "auto"
+                R.id.rbTemaDark  -> "dark"
+                else             -> "auto"
             }
             prefs.edit().putString("tema", tema).apply()
             vm.postaviTemu(tema)
@@ -66,7 +73,7 @@ class SettingsActivity : AppCompatActivity() {
         rgJezik.setOnCheckedChangeListener { _, checkedId ->
             val jezik = when (checkedId) {
                 R.id.rbJezikEn -> "en"
-                else -> "bs"
+                else           -> "bs"
             }
             prefs.edit().putString("jezik", jezik).apply()
             vm.postaviJezik(jezik)
@@ -75,7 +82,7 @@ class SettingsActivity : AppCompatActivity() {
         rgJedinice.setOnCheckedChangeListener { _, checkedId ->
             val jedinice = when (checkedId) {
                 R.id.rbFahrenheit -> "fahrenheit"
-                else -> "celsius"
+                else              -> "celsius"
             }
             prefs.edit().putString("jedinice", jedinice).apply()
             vm.postaviJedinice(jedinice)
@@ -89,6 +96,24 @@ class SettingsActivity : AppCompatActivity() {
         swOluja.setOnCheckedChangeListener { _, isChecked ->
             prefs.edit().putBoolean("notifikacije_oluja", isChecked).apply()
             vm.postaviNotifikacijeOluja(isChecked)
+        }
+
+        // ─── Spirala 2: Keš management ───────────────────────────────────────
+
+        val tvBrojKesiranih = findViewById<TextView>(R.id.tvBrojKesiranih)
+        val btnObrisiKes    = findViewById<MaterialButton>(R.id.btnObrisiKes)
+
+        val repository = WeatherWatchApplication.instance.repository
+
+        repository.getBrojKesiranih().asLiveData().observe(this) { broj ->
+            tvBrojKesiranih.text = "Keširano prognoza: $broj"
+        }
+
+        btnObrisiKes.setOnClickListener {
+            lifecycleScope.launch {
+                repository.obrisiKes()
+                Snackbar.make(btnObrisiKes, "Keširani podaci obrisani", Snackbar.LENGTH_SHORT).show()
+            }
         }
     }
 }
