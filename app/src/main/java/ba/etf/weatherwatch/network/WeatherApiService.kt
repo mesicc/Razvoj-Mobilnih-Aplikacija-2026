@@ -30,10 +30,7 @@ object RetrofitClient {
     private const val BASE_URL = "https://api.open-meteo.com/"
 
     private val loggingInterceptor = HttpLoggingInterceptor().apply {
-        level = if (ba.etf.weatherwatch.BuildConfig.DEBUG)
-            HttpLoggingInterceptor.Level.BODY
-        else
-            HttpLoggingInterceptor.Level.NONE
+        level = HttpLoggingInterceptor.Level.BODY
     }
 
     private val okHttpClient = OkHttpClient.Builder()
